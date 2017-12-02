@@ -1,0 +1,38 @@
+<launch>
+<!-- Convert xacro and put on parameter server -->
+<arg name="rvizconfig" default="$(find badger_silo)/cfg/sim_badger.rviz" />
+<param name="robot_description" command="$(find xacro)/xacro.py $(find badger_silo)/badger_description/badger_robot.urdf.xacro" />
+
+ <rosparam file="$(find badger_silo)/config/badger_controller.yaml" command="load" />
+ 
+ <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+	output="screen" ns="/badger" args="joint_state_controller
+					  stewart_part1_joint1_position_controller
+					  stewart_part1_joint2_position_controller
+					  stewart_part1_joint3_position_controller
+					  stewart_part1_joint4_position_controller
+					  stewart_part2_joint1_position_controller
+					  stewart_part2_joint2_position_controller
+					  stewart_part2_joint3_position_controller
+					  stewart_part2_joint4_position_controller
+					  stewart_part3_joint1_position_controller
+					  stewart_part3_joint2_position_controller
+					  stewart_part3_joint3_position_controller
+					  stewart_part3_joint4_position_controller"/>
+
+<!-- Spawn a robot into Gazebo -->
+<node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -model badger -z 0.2 -R 1.57" />
+
+<node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" >
+	<param name="ignore_timestamp" value="true"/>
+	<remap from="joint_states" to="/badger/joint_states" />
+</node>
+	
+<node pkg="badger_silo" name="badger_tf_publisher" type="badger_tf_publisher.py" output="screen"/>
+
+<node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" />
+
+<include file="$(find gazebo_ros)/launch/empty_world.launch">
+	   <arg name="world_name" value="$(find badger_silo)/resources/badger_world.world" />
+</include>
+</launch>

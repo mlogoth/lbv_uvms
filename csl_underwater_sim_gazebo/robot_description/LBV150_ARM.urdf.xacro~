@@ -1,0 +1,100 @@
+<?xml version="1.0"?>
+<robot name="LBV150">
+  <link name="base_link">
+  <inertial>
+      <mass value="2.15"/>
+      <inertia ixx="4" ixy="0" ixz="0" iyy="8" iyz="0" izz="8"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://csl_auv_simulator/data/models/LBV150_real_scale.osg" />  
+      </geometry>
+    </visual>
+  </link>
+  
+  <joint name="baselink_to_part0" type="fixed">
+    <parent link="base_link"/>
+    <child link="part0"/>
+    <origin rpy="0 0 0" xyz="0.11 0 0"/>
+  </joint>
+  
+  <link name="part0">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0.13"/>
+      <geometry>
+        <box size="0.05 0.05 0.03" />
+      </geometry>
+    </visual>
+  </link>  
+  
+  <link name="part1">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0.0"/>
+      <geometry>
+        <mesh filename="package://csl_auv_simulator/data/models/LinkA_real.osg"/>
+      </geometry>
+    </visual>
+     <inertial>
+      <mass value="0.01"/>
+      <inertia ixx="6.667e-7" ixy="0.0"       ixz="0.0"
+                              iyy="6.667e-7"  iyz="0.0"
+                                              izz="6.667e-7" />
+    </inertial>
+  </link> 
+  
+  <joint name="LinkA" type="continuous">
+    <parent link="part0"/>
+    <child link="part1"/>
+    <axis xyz="0 0 1"/>
+    <origin rpy="0 0 3.1459" xyz="0 0 0.17"/>
+    <limit effort="1000.0" lower="-1.570796327" upper="0.5488" velocity="1.0"/>
+  </joint> 
+  
+  <link name="part2">
+    <visual>
+      <origin rpy="1.57 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://csl_auv_simulator/data/models/LinkB_real.osg"/>
+      </geometry>
+    </visual>
+     <inertial>
+      <mass value="0.01"/>
+      <inertia ixx="6.667e-7" ixy="0.0"       ixz="0.0"
+                              iyy="6.667e-7"  iyz="0.0"
+                                              izz="6.667e-7" />
+    </inertial>
+  </link> 
+  
+  <joint name="LinkB" type="continuous">
+    <parent link="part1"/>
+    <child link="part2"/>
+    <axis xyz="0 0 1"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <limit effort="1000.0" lower="0" upper="1.58665" velocity="1.0"/>
+  </joint> 
+  
+  <link name="part3">
+    <visual>
+      <origin rpy="1.57 0 0" xyz="0 0 0.35"/>
+      <geometry>
+        <mesh filename="package://csl_auv_simulator/data/models/LinkC_real.osg"/>
+      </geometry>
+    </visual>
+     <inertial>
+      <mass value="0.01"/>
+      <inertia ixx="6.667e-7" ixy="0.0"       ixz="0.0"
+                              iyy="6.667e-7"  iyz="0.0"
+                                              izz="6.667e-7" />
+    </inertial>
+  </link> 
+  
+  <joint name="LinkC" type="continuous">
+    <parent link="part2"/>
+    <child link="part3"/>
+    <axis xyz="0 0 1"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <limit effort="1000.0" lower="0" upper="1.58665" velocity="1.0"/>
+  </joint> 
+  
+</robot>

@@ -1,0 +1,40 @@
+<launch>
+<!--<arg name="rvizconfig" default="$(find csl_underwater_sim_gazebo)/cfg/uvms_sim.rviz" /> -->
+
+<arg name="paused" default="true"/>
+<include file="$(find gazebo_ros)/launch/empty_world.launch">
+	   <arg name="paused" value="$(arg paused)"/>
+	   <!-- <arg name="world_name" value="$(find csl_underwater_sim_gazebo)/resources/uvms_world.world" />-->
+	   <arg name="world_name" value="$(find freefloating_gazebo)/world/underwater.world" />
+</include>
+
+<group>
+  <param name="lbv150_uvms/robot_description" command="$(find xacro)/xacro --inorder $(find csl_underwater_sim_gazebo)/robot_description/lbv150_uvms.urdf.xacro" />
+  <!-- Spawn a robot into Gazebo -->
+  <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" args="-urdf -model lbv150_uvms -param lbv150_uvms/robot_description -z -2 -R 3.14159" />
+</group>
+	
+<!--<rosparam file="$(find csl_underwater_sim_gazebo)/config/uvms_controller.yaml" command="load" /> -->
+
+<!--<node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+	output="screen" ns="/lbv150_uvms" args="joint_state_controller
+					  stewart_part1_joint1_position_controller
+					  stewart_part1_joint2_position_controller
+					  stewart_part1_joint3_position_controller
+					  stewart_part1_joint4_position_controller"/> -->
+
+<!--
+<node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" >
+	<param name="ignore_timestamp" value="true"/>
+	<remap from="joint_states" to="/lbv150_uvms/joint_states" />
+</node>
+-->
+<!-- <node pkg="tf" type="static_transform_publisher" name="uvms_tf" args="-1 0 1 0 0 3.14159  /base_link /world 100"/> -->
+
+<!--
+<node pkg="csl_underwater_sim_gazebo" name="lbv150_uvms_tf_publisher" type="lbv150_uvms_tf_publisher.py" output="screen"/>
+-->
+
+<!--<node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" /> -->
+
+</launch>

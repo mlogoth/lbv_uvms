@@ -1,0 +1,172 @@
+<?xml version="1.0"?>
+
+<robot name="LBV150_UVMS"
+	xmlns:xacro="http://www.ros.org/wiki/xacro">
+	
+  <xacro:include filename="$(find csl_underwater_sim_gazebo)/robot_description/LBV150_UVMS.gazebo" />
+	
+  <xacro:property name="vehicle_length" value="0.6" />
+  <xacro:property name="vehicle_width" value="0.2" />
+  <xacro:property name="vehicle_height" value="0.2" />
+  <xacro:property name="vehicle_mass" value="12" />
+  <xacro:property name="vehicle_Ixx" value="0.1589" />
+  <xacro:property name="vehicle_Iyy" value="0.1589" />
+  <xacro:property name="vehicle_Izz" value="0.1589" />
+  
+  <xacro:property name="pi" value="3.1415926535897931" />
+   
+  
+  <material name="white">
+    <color rgba="1 1 1 1"/>
+  </material> 
+  
+  
+
+<!--Vehicle-->
+  <link name="base_link">
+  	<visual>
+    		<geometry>
+        		<mesh filename="package://csl_underwater_sim_gazebo/data/models/LBV150_karrasg.dae" />	
+      		</geometry>
+      		<origin rpy="0 0 0" xyz="0 0 0"/>
+      	</visual>
+      	
+      	<collision>
+    		<geometry>
+        		<box size = "${1.2*vehicle_length} ${1.2*vehicle_width} ${1.2*vehicle_height}"/>
+      		</geometry>
+      	</collision>
+      	<inertial>
+      		<origin rpy="0 0 0" xyz="0 0 0"/>
+      		<mass value="${vehicle_mass}"/>
+      		<inertia ixx="${vehicle_Ixx}" ixy="0.0" ixz="0.0" iyy="${vehicle_Iyy}" iyz="0.0" izz="${vehicle_Izz}"/>
+    	</inertial>
+    	
+    	<buoyancy>
+         <compensation>1.0</compensation>
+         <origin xyz="0 0 0"/>
+         <limit radius=".5"/>
+         <damping xyz="60 100 100" rpy="20 50 50"/>
+      </buoyancy>
+  </link>
+  
+  <!--Arm-->
+  
+  <link name="arm_link1">
+    	<visual>
+      		<geometry>
+        		<mesh filename="package://csl_underwater_sim_gazebo/data/models/LinkA.stl"/>
+      		</geometry>
+      		
+      		<origin rpy="0 0 3.14159" xyz="0.0 0.00 0"/>
+      		<material name="white"/>
+    	</visual>
+     	<inertial>
+      		<mass value="0.01"/>
+      		<inertia ixx="6.667e-7" ixy="0.0"       ixz="0.0" iyy="6.667e-7"  iyz="0.0" izz="6.667e-7" />
+    	</inertial>
+    <buoyancy>
+      <compensation>1.0</compensation>
+    </buoyancy>
+  </link> 
+  
+  <link name="arm_link2">
+    	<visual>
+      		<geometry>
+        		<mesh filename="package://csl_underwater_sim_gazebo/data/models/LinkB.stl"/>
+      		</geometry>
+      		<material name="white"/>
+    	</visual>
+    	
+     	<inertial>
+      		<mass value="0.01"/>
+      		<inertia ixx="6.667e-7" ixy="0.0"       ixz="0.0" iyy="6.667e-7"  iyz="0.0" izz="6.667e-7" />
+    	</inertial>
+    <buoyancy>
+      <compensation>1.0</compensation>
+    </buoyancy>
+  </link> 
+  
+  <link name="arm_link3">
+    	<visual>
+      		<geometry>
+        		<mesh filename="package://csl_underwater_sim_gazebo/data/models/LinkC.stl"/>
+      		</geometry>
+      		<origin rpy="-1.57 3.1459 0" xyz="-0.015 0.050 0"/>
+      		<material name="white"/>
+    	</visual>
+    	
+     	<inertial>
+      		<mass value="0.01"/>
+      		<inertia ixx="6.667e-7" ixy="0.0"       ixz="0.0" iyy="6.667e-7"  iyz="0.0" izz="6.667e-7" />
+    	</inertial>
+    <buoyancy>
+      <compensation>1.0</compensation>
+    </buoyancy>
+  </link> 
+  
+  <link name="arm_ee">
+    	<visual>
+    		<geometry>
+        		<cylinder length="0.10" radius="0.005"/>	
+      		</geometry>
+      		<material name="white"/>
+      	</visual>
+      	<collision>
+    		<geometry>
+        		<box size = "0.007 0.007 0.1"/>
+      		</geometry>
+      	</collision>
+      	<inertial>
+      		<mass value="0.01"/>
+      		<inertia ixx="6.667e-7" ixy="0.0"       ixz="0.0" iyy="6.667e-7"  iyz="0.0" izz="6.667e-7" />
+    	</inertial>
+    <buoyancy>
+      <compensation>1.0</compensation>
+    </buoyancy>
+  </link>
+  
+  
+  <!-- arm tool link -->
+  <link name="arm_tool_link">
+  </link>
+  
+  <joint name="arm_1_joint" type="revolute">
+    <parent link="base_link"/>
+    <child link="arm_link1"/>
+     <axis xyz="0 0 1"/>
+    <origin rpy="0 0 0" xyz="0.11 0 0.155"/>
+    <limit effort="1000.0" lower="${-pi}" upper="${pi}" velocity="1.0"/>
+  </joint>
+  
+  <joint name="arm_2_joint" type="revolute">
+    <parent link="arm_link1"/>
+    <child link="arm_link2"/>
+    <axis xyz="0 0 1"/>
+    <origin rpy="1.57 0 0" xyz="0 0 0.05"/>
+    <limit effort="1000.0" lower="${-pi/2.0}" upper="${pi*65.0/180.0}" velocity="1.0"/>
+  </joint>
+  
+  <joint name="arm_3_joint" type="revolute">
+    <parent link="arm_link2"/>
+    <child link="arm_link3"/>
+    <axis xyz="0 0 1"/>
+    <origin rpy="0 0 0" xyz="-0.0 0.147 0"/>
+    <limit effort="1000.0" lower="${-pi*130.0/180.0}" upper="${pi/2.0}" velocity="1.0"/>
+  </joint>
+  
+  <joint name="arm_4_joint" type="revolute">
+  <parent link="arm_link3"/>
+    <child link="arm_tool_link"/>
+    <axis xyz="0 0 1"/>
+    <origin rpy="-1.57 0 0" xyz="-0.015 0.07 0"/>
+    <limit effort="1000.0" lower="${-pi}" upper="${pi}" velocity="1.0"/>
+  </joint>
+  
+  <joint name = "arm_fixed" type="fixed">
+    <parent link="arm_tool_link"/>
+    <child link="arm_ee"/>
+    <origin rpy="0.0 0 0" xyz="0.0 0.0 0"/>
+  </joint>
+  
+</robot>
